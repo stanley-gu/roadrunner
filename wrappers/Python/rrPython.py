@@ -603,7 +603,7 @@ def setTimeEnd(timeEnd, rrHandle = None):
 def setNumPoints(numPoints, rrHandle = None):
     if rrHandle is None:
         rrHandle = gHandle
-    return rrLib.setNumPoints(rrHandle, numPoints)
+    return rrLib.setNumPoints(rrHandle, c_int(numPoints))
 
 ##\brief Sets the list of variables returned by simulate() or simulateEx()
 #
@@ -722,11 +722,13 @@ def getRoadRunnerData(aHandle = None):
 #Example: m = rrPython.simulateEx(0, 25, 200)
 #
 #\return Returns a string containing the results of the simulation organized in rows and columns
-def simulateEx(timeStart, timeEnd, numberOfPoints):
+def simulateEx(timeStart, timeEnd, numberOfPoints, aHandle = None):
     startValue = c_double(timeStart)
     endValue = c_double(timeEnd)
     nrPoints = c_int(numberOfPoints)
-    result = rrLib.simulateEx(gHandle, startValue, endValue, nrPoints)
+    if aHandle is None:
+        aHandle = gHandle
+    result = rrLib.simulateEx(aHandle, startValue, endValue, nrPoints)
     #TODO: Check result
     rowCount = rrLib.getRRDataNumRows(result)
     colCount = rrLib.getRRDataNumCols(result)
